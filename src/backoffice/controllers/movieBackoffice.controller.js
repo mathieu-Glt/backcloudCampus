@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Contrôleur gérant les opérations CRUD sur les films dans le backoffice
+ */
+
 const xss = require("xss");
 const fs = require("fs");
 const path = require("path");
@@ -10,15 +14,21 @@ const {
   updateMovieRate: updateMovieRateQuery,
 } = require("../queries/movieBackoffice.queries");
 
-//
-// create movie
 /**
- * Création d'un film
+ * Crée un nouveau film dans la base de données
+ * @async
+ * @function createMovie
  * @param {Object} req - Requête Express
+ * @param {string} req.body.title - Titre du film
+ * @param {string} req.body.synopsis - Synopsis du film
+ * @param {string} req.body.picture - URL de l'image du film
+ * @param {string} req.body.url - URL du film
+ * @param {number} req.body.rate - Note du film
  * @param {Object} res - Réponse Express
  * @param {Function} next - Middleware suivant
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas authentifié, n'a pas les droits ou si le film existe déjà
  */
-
 const createMovie = async (req, res) => {
   try {
     const { title, synopsis, picture, url, rate } = req.body;
@@ -66,12 +76,16 @@ const createMovie = async (req, res) => {
   }
 };
 
-// upload picture
 /**
- * Upload d'une image
+ * Upload une image pour un film
+ * @async
+ * @function uploadPicture
  * @param {Object} req - Requête Express
+ * @param {Object} req.files.image - Fichier image à uploader
  * @param {Object} res - Réponse Express
  * @param {Function} next - Middleware suivant
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas authentifié, n'a pas les droits ou si le fichier est invalide
  */
 const uploadPicture = async (req, res, next) => {
   try {
@@ -123,6 +137,13 @@ const uploadPicture = async (req, res, next) => {
     }
 
     // 7. Déplacement du fichier avec promesse
+    //   image.mv(uploadPath, (error) => {
+    //     if (error) {
+    //         // Gérer l'erreur
+    //     } else {
+    //         // Fichier déplacé avec succès
+    //     }
+    // });
     await promisify(image.mv.bind(image))(uploadPath);
 
     // 8. Réponse de succès
@@ -142,14 +163,22 @@ const uploadPicture = async (req, res, next) => {
   }
 };
 
-// update movie
 /**
- * Mise à jour d'un film
+ * Met à jour un film existant
+ * @async
+ * @function updateMovie
  * @param {Object} req - Requête Express
+ * @param {string} req.params.id - ID du film à mettre à jour
+ * @param {string} req.body.title - Nouveau titre du film
+ * @param {string} req.body.synopsis - Nouveau synopsis du film
+ * @param {string} req.body.picture - Nouvelle URL de l'image du film
+ * @param {string} req.body.url - Nouvelle URL du film
+ * @param {number} req.body.rate - Nouvelle note du film
  * @param {Object} res - Réponse Express
  * @param {Function} next - Middleware suivant
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas authentifié, n'a pas les droits ou si le film n'existe pas
  */
-
 const updateMovie = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -194,14 +223,17 @@ const updateMovie = async (req, res, next) => {
   }
 };
 
-// delete movie
 /**
- * Suppression d'un film
+ * Supprime un film de la base de données
+ * @async
+ * @function deleteMovie
  * @param {Object} req - Requête Express
+ * @param {string} req.params.id - ID du film à supprimer
  * @param {Object} res - Réponse Express
  * @param {Function} next - Middleware suivant
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas authentifié, n'a pas les droits ou si le film n'existe pas
  */
-
 const deleteMovie = async (req, res, next) => {
   try {
     const { id } = req.params;

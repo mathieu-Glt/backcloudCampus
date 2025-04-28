@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Contrôleur gérant les opérations CRUD sur les utilisateurs dans le backoffice
+ */
+
 const bcrypt = require("bcrypt");
 const {
   getAllUsers: getAllUsersQuery,
@@ -6,7 +10,15 @@ const {
   deleteUser: deleteUserQuery,
 } = require("../queries/user.queries");
 
-// Récupérer tous les utilisateurs
+/**
+ * Récupère tous les utilisateurs de la base de données
+ * @async
+ * @function getAllUsers
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} En cas d'erreur serveur
+ */
 const getAllUsers = async (req, res) => {
   try {
     const users = await getAllUsersQuery();
@@ -17,7 +29,16 @@ const getAllUsers = async (req, res) => {
   }
 };
 
-// Récupérer un utilisateur par son ID
+/**
+ * Récupère un utilisateur spécifique par son ID
+ * @async
+ * @function getUserById
+ * @param {Object} req - Requête Express
+ * @param {string} req.params.id - ID de l'utilisateur à récupérer
+ * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas trouvé ou en cas d'erreur serveur
+ */
 const getUserById = async (req, res) => {
   try {
     const user = await getUserByIdQuery(req.params.id);
@@ -31,7 +52,21 @@ const getUserById = async (req, res) => {
   }
 };
 
-// Mettre à jour un utilisateur
+/**
+ * Met à jour les informations d'un utilisateur
+ * @async
+ * @function updateUser
+ * @param {Object} req - Requête Express
+ * @param {string} req.params.id - ID de l'utilisateur à mettre à jour
+ * @param {string} [req.body.email] - Nouvel email de l'utilisateur
+ * @param {string} [req.body.password] - Nouveau mot de passe de l'utilisateur
+ * @param {string} [req.body.firstName] - Nouveau prénom de l'utilisateur
+ * @param {string} [req.body.lastName] - Nouveau nom de famille de l'utilisateur
+ * @param {string} [req.body.role] - Nouveau rôle de l'utilisateur
+ * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas trouvé ou en cas d'erreur serveur
+ */
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,7 +96,16 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Supprimer un utilisateur
+/**
+ * Supprime un utilisateur de la base de données
+ * @async
+ * @function deleteUser
+ * @param {Object} req - Requête Express
+ * @param {string} req.params.id - ID de l'utilisateur à supprimer
+ * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur n'est pas trouvé ou en cas d'erreur serveur
+ */
 const deleteUser = async (req, res) => {
   try {
     const user = await deleteUserQuery(req.params.id);

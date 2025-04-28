@@ -1,9 +1,16 @@
+/**
+ * @fileoverview Module de requêtes pour les opérations CRUD sur les genres
+ */
+
 const { Genre } = require("../models/genre.model");
 const { Op } = require("sequelize");
 
 /**
- * Récupère tous les genres
- * @returns {Promise<Array>} Liste des genres
+ * Récupère tous les genres de la base de données
+ * @async
+ * @function getAllGenres
+ * @returns {Promise<Array<Object>>} Liste des genres triés par nom
+ * @throws {Error} En cas d'erreur lors de la récupération
  */
 const getAllGenres = async () => {
   try {
@@ -17,9 +24,12 @@ const getAllGenres = async () => {
 };
 
 /**
- * Récupère un genre par son ID
- * @param {number} id - ID du genre
- * @returns {Promise<Object>} Genre trouvé
+ * Récupère un genre par son identifiant
+ * @async
+ * @function getGenreById
+ * @param {number} id - Identifiant du genre
+ * @returns {Promise<Object|null>} Le genre trouvé ou null si non trouvé
+ * @throws {Error} En cas d'erreur lors de la récupération
  */
 const getGenreById = async (id) => {
   try {
@@ -38,9 +48,14 @@ const getGenreById = async (id) => {
 };
 
 /**
- * Crée un nouveau genre
- * @param {Object} genreData - Données du genre
- * @returns {Promise<Object>} Genre créé
+ * Crée un nouveau genre dans la base de données
+ * @async
+ * @function createGenre
+ * @param {Object} genreData - Données du genre à créer
+ * @param {string} genreData.name - Nom du genre
+ * @param {string} genreData.description - Description du genre
+ * @returns {Promise<Object>} Le genre créé
+ * @throws {Error} En cas d'erreur lors de la création
  */
 const createGenre = async (genreData) => {
   try {
@@ -52,10 +67,13 @@ const createGenre = async (genreData) => {
 };
 
 /**
- * Met à jour un genre
- * @param {number} id - ID du genre
+ * Met à jour les informations d'un genre
+ * @async
+ * @function updateGenre
+ * @param {number} id - Identifiant du genre à mettre à jour
  * @param {Object} genreData - Nouvelles données du genre
- * @returns {Promise<Object>} Genre mis à jour
+ * @returns {Promise<Object|null>} Le genre mis à jour ou null si non trouvé
+ * @throws {Error} En cas d'erreur lors de la mise à jour
  */
 const updateGenre = async (id, genreData) => {
   try {
@@ -71,9 +89,12 @@ const updateGenre = async (id, genreData) => {
 };
 
 /**
- * Supprime un genre
- * @param {number} id - ID du genre
- * @returns {Promise<boolean>} Succès de la suppression
+ * Supprime un genre de la base de données
+ * @async
+ * @function deleteGenre
+ * @param {number} id - Identifiant du genre à supprimer
+ * @returns {Promise<Object|null>} Le genre supprimé ou null si non trouvé
+ * @throws {Error} En cas d'erreur lors de la suppression
  */
 const deleteGenre = async (id) => {
   try {
@@ -91,8 +112,11 @@ const deleteGenre = async (id) => {
 
 /**
  * Récupère un genre par son nom
+ * @async
+ * @function getGenreByName
  * @param {string} name - Nom du genre
- * @returns {Promise<Object>} Genre trouvé
+ * @returns {Promise<Object|null>} Le genre trouvé ou null si non trouvé
+ * @throws {Error} En cas d'erreur lors de la récupération
  */
 const getGenreByName = async (name) => {
   try {
@@ -107,8 +131,11 @@ const getGenreByName = async (name) => {
 
 /**
  * Récupère un genre par son slug
+ * @async
+ * @function getGenreBySlug
  * @param {string} slug - Slug du genre
- * @returns {Promise<Object>} Genre trouvé
+ * @returns {Promise<Object|null>} Le genre trouvé ou null si non trouvé
+ * @throws {Error} En cas d'erreur lors de la récupération
  */
 const getGenreBySlug = async (slug) => {
   try {

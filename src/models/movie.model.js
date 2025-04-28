@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database/database");
-const Genre = require("./genre.model");
 
 const Movie = sequelize.define(
   "Movie",
@@ -62,10 +61,6 @@ const Movie = sequelize.define(
     genreId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Genre,
-        key: "id",
-      },
     },
   },
   {
@@ -74,11 +69,13 @@ const Movie = sequelize.define(
   }
 );
 
-// Relation avec Genre
-Movie.belongsTo(Genre, {
-  foreignKey: "genreId",
-  as: "genre",
-});
+// Fonction pour définir la relation plus tard
+Movie.associate = (models) => {
+  Movie.belongsTo(models.Genre, {
+    foreignKey: "genreId",
+    as: "genre",
+  });
+};
 
 Movie.beforeCreate((movie, options) => {
   movie.slug = movie.title.toLowerCase().replace(/ /g, "-");

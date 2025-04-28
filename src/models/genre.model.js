@@ -1,6 +1,5 @@
 const { DataTypes } = require("sequelize");
 const sequelize = require("../database/database");
-const Movie = require("./movie.model");
 
 const Genre = sequelize.define(
   "Genre",
@@ -43,10 +42,12 @@ Genre.beforeUpdate((genre) => {
   }
 });
 
-// Relations avec Movie
-Genre.hasMany(Movie, {
-  foreignKey: "genreId",
-  as: "movies",
-});
+// Fonction pour définir la relation plus tard
+Genre.associate = (models) => {
+  Genre.hasMany(models.Movie, {
+    foreignKey: "genreId",
+    as: "movies",
+  });
+};
 
 module.exports = Genre;

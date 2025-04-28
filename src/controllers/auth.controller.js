@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Contrôleur d'authentification gérant l'inscription, la connexion et la déconnexion des utilisateurs
+ */
+
 const bcrypt = require("bcrypt");
 const xss = require("xss");
 const jwt = require("jsonwebtoken");
@@ -14,8 +18,18 @@ const { createUser: registerUserQuery } = require("../queries/auth.queries");
 
 /**
  * Enregistre un nouvel utilisateur dans la base de données
- * @param {Object} req - Requête Express contenant les données de la requête
+ * @async
+ * @function registerUser
+ * @param {Object} req - Requête Express
+ * @param {string} req.body.email - Email de l'utilisateur
+ * @param {string} req.body.password - Mot de passe de l'utilisateur
+ * @param {string} req.body.firstname - Prénom de l'utilisateur
+ * @param {string} req.body.lastname - Nom de famille de l'utilisateur
+ * @param {string} req.body.username - Nom d'utilisateur
+ * @param {string} [req.body.role="user"] - Rôle de l'utilisateur (par défaut: "user")
  * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} Si l'utilisateur existe déjà ou en cas d'erreur serveur
  */
 const registerUser = async (req, res) => {
   console.log("=== registerUser ===");
@@ -82,9 +96,16 @@ const registerUser = async (req, res) => {
 };
 
 /**
- * Connexion d'un utilisateur existant
- * @param {Object} req - Requête Express contenant les données de la requête
+ * Authentifie un utilisateur existant
+ * @async
+ * @function loginUser
+ * @param {Object} req - Requête Express
+ * @param {string} req.body.email - Email de l'utilisateur
+ * @param {string} req.body.password - Mot de passe de l'utilisateur
  * @param {Object} res - Réponse Express
+ * @param {Function} next - Middleware suivant
+ * @returns {Promise<void>}
+ * @throws {Error} Si les identifiants sont invalides ou en cas d'erreur serveur
  */
 const loginUser = async (req, res, next) => {
   console.log("=== loginUser ===");
@@ -155,9 +176,13 @@ const loginUser = async (req, res, next) => {
 };
 
 /**
- * Détruit la session de l'utilisateur (déconnexion)
+ * Déconnecte l'utilisateur et détruit sa session
+ * @async
+ * @function sessionDestroy
  * @param {Object} req - Requête Express
  * @param {Object} res - Réponse Express
+ * @returns {Promise<void>}
+ * @throws {Error} En cas d'erreur lors de la destruction de la session
  */
 const sessionDestroy = async (req, res) => {
   try {
@@ -204,9 +229,12 @@ const sessionDestroy = async (req, res) => {
 };
 
 /**
- * Vérifie l'authentification et retourne les informations de session
+ * Vérifie l'état d'authentification de l'utilisateur
+ * @function checkAuth
  * @param {Object} req - Requête Express
  * @param {Object} res - Réponse Express
+ * @returns {void}
+ * @throws {Error} En cas d'erreur lors de la vérification de l'authentification
  */
 const checkAuth = (req, res) => {
   try {
@@ -253,4 +281,4 @@ const checkAuth = (req, res) => {
   }
 };
 
-module.exports = { sessionDestroy, registerUser, loginUser, checkAuth };
+module.exports = { registerUser, loginUser, sessionDestroy, checkAuth };
