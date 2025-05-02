@@ -155,9 +155,9 @@ const getGenreBySlug = async (slug) => {
 };
 
 module.exports = {
+  createGenre,
   getAllGenres,
   getGenreById,
-  createGenre,
   updateGenre,
   deleteGenre,
   getGenreByName,

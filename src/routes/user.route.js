@@ -7,10 +7,7 @@ const {
   updateUser,
   deleteUser,
 } = require("../controllers/user.controller");
-const {
-  isAuthenticated,
-  isAdmin,
-} = require("../../middleware/auth.middleware");
+const { isAuthenticated, isAdmin } = require("../middleware/auth.middleware");
 
 // Routes protégées nécessitant une authentification
 router.get("/profile", isAuthenticated, (req, res) => {
@@ -19,10 +16,10 @@ router.get("/profile", isAuthenticated, (req, res) => {
 });
 
 // Routes nécessitant des droits admin
-router.get("/", isAdmin, getAllUsers);
-router.get("/:id", isAdmin, getUserById);
-router.put("/:id", isAdmin, updateUser);
-router.delete("/:id", isAdmin, deleteUser);
+router.get("/", isAdmin, authorize(ROLES.ADMIN), getAllUsers);
+router.get("/:id", isAdmin, authorize(ROLES.ADMIN), getUserById);
+router.put("/:id", isAdmin, authorize(ROLES.ADMIN), updateUser);
+router.delete("/:id", isAdmin, authorize(ROLES.ADMIN), deleteUser);
 
 // Exemple d'utilisation de isOwnerOrAdmin
 router.get("/me", isAuthenticated, (req, res) => {

@@ -75,6 +75,14 @@ Movie.associate = (models) => {
     foreignKey: "genreId",
     as: "genre",
   });
+
+  Movie.belongsToMany(models.FavoriteList, {
+    through: "favorite_list_movies",
+    foreignKey: "movieId",
+    otherKey: "favoriteListId",
+    as: "favoriteLists",
+    timestamps: true,
+  });
 };
 
 Movie.beforeCreate((movie, options) => {

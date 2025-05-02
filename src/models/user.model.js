@@ -205,4 +205,13 @@ User.comparePassword = async function (plainPassword, hashedPassword) {
   return await bcrypt.compare(plainPassword, hashedPassword);
 };
 
+// Définition des relations
+User.associate = (models) => {
+  // Relation avec FavoriteList (One-to-One)
+  User.hasOne(models.FavoriteList, {
+    foreignKey: "userId",
+    as: "favoriteList",
+  });
+};
+
 module.exports = User;

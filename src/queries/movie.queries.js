@@ -32,6 +32,8 @@ const getMovieById = async (id) => {
 
 /**
  * Crée un nouveau film
+ * @async
+ * @function createMovie
  * @param {Object} movieData - Données du film
  * @returns {Promise<Object>} Film créé
  */
@@ -46,6 +48,8 @@ const createMovie = async (movieData) => {
 
 /**
  * Met à jour un film
+ * @async
+ * @function updateMovie
  * @param {number} id - ID du film
  * @param {Object} movieData - Nouvelles données du film
  * @returns {Promise<Object>} Film mis à jour
@@ -65,6 +69,8 @@ const updateMovie = async (id, movieData) => {
 
 /**
  * Supprime un film
+ * @async
+ * @function deleteMovie
  * @param {number} id - ID du film
  * @returns {Promise<boolean>} Succès de la suppression
  */
@@ -173,6 +179,21 @@ const getRandomMovies = async () => {
     throw error;
   }
 };
+/**
+ * Met à jour la note d'un film
+ * @async
+ * @function updateMovieRate
+ * @param {number} id - Identifiant du film
+ * @param {number} rate - Nouvelle note du film
+ * @returns {Promise<Object|null>} Le film mis à jour ou null si non trouvé
+ */
+const updateMovieRate = async (id, rate) => {
+  const movie = await Movie.findByPk(id);
+  if (!movie) return null;
+
+  await movie.update({ rate });
+  return movie;
+};
 
 module.exports = {
   getAllMovies,
@@ -180,6 +201,7 @@ module.exports = {
   createMovie,
   updateMovie,
   deleteMovie,
+  updateMovieRate,
   getMovieByTitle,
   getMovieBySlug,
   getBestMovies,

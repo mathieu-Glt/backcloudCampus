@@ -2,7 +2,7 @@
  * @fileoverview Module de requêtes pour les opérations CRUD sur les utilisateurs
  */
 
-const User = require("../../models/user.model");
+const User = require("../models/user.model");
 
 /**
  * Récupère tous les utilisateurs de la base de données

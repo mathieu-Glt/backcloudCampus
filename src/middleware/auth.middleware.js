@@ -138,10 +138,41 @@ const authenticate = async (req, res, next) => {
   }
 };
 
+/**
+ * Middleware pour récupérer le rôle de l'utilisateur
+ * @param {Object} req - Requête Express
+ * @param {Object} res - Réponse Express
+ * @param {Function} next - Fonction next
+ */
+const getUserRole = (req, res, next) => {
+  try {
+    // 1. Vérification de l'authentification Passport
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    // 2. Récupération du rôle depuis l'utilisateur Passport
+    const userRole = req.user.role;
+
+    if (!userRole) {
+      return res.status(401).json({ message: "User role not found" });
+    }
+
+    // 3. Ajout du rôle à la requête pour un accès facile
+    req.userRole = userRole;
+
+    next();
+  } catch (error) {
+    console.error("Error getting user role:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   isAuthenticated,
   isAdmin,
   isOwnerOrAdmin,
   verifyUserCredentials,
   authenticate,
+  getUserRole,
 };
