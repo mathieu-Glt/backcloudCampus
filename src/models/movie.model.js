@@ -61,6 +61,10 @@ const Movie = sequelize.define(
     genreId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      references: {
+        model: "Genres",
+        key: "id",
+      },
     },
   },
   {
@@ -82,6 +86,13 @@ Movie.associate = (models) => {
     otherKey: "favoriteListId",
     as: "favoriteLists",
     timestamps: true,
+  });
+
+  Movie.belongsToMany(models.Character, {
+    through: "MovieCharacters",
+    as: "characters",
+    foreignKey: "movieId",
+    otherKey: "characterId",
   });
 };
 

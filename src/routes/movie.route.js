@@ -1,22 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const fileUpload = require("express-fileupload");
-const { isAuthenticated } = require("../middleware/auth.middleware");
-const { isAdmin } = require("../middleware/auth.middleware");
-const {
-  getAllMovies,
-  getMovieById,
-  getMovieByTitle,
-  getMovieBySlug,
-  getBestMovies,
-  getWorstMovies,
-  getLatestMovies,
-  getRandomMovies,
-  createMovie,
-  updateMovie,
-  deleteMovie,
-  uploadPicture,
-} = require("../controllers/movie.controller");
+const { isAuthenticated, isAdmin } = require("../middleware/auth.middleware");
+const movieController = require("../controllers/movie.controller");
+const { authorize } = require("../../server/middleware/authorize");
+const ROLES = require("../../config/roles");
 
 // Configuration de fileUpload
 router.use(
@@ -29,36 +17,56 @@ router.use(
   })
 );
 
-// Route pour récupérer tous les films
-router.get("/", getAllMovies);
-// Route pour récupérer un film par son titre
-router.get("/title/:title", getMovieByTitle);
+// Routes publiques (lecture)
+router.get("/", movieController.getAllMovies);
+router.get("/:id", movieController.getMovieById);
+router.get("/title/:title", movieController.getMovieByTitle);
+router.get("/genre/:genre", movieController.getMoviesByGenre);
 
 // Route pour récupérer un film par son slug
-router.get("/slug/:slug", getMovieBySlug);
+router.get("/slug/:slug", movieController.getMovieBySlug);
 
 // Route pour récupérer les films les mieux notés
-router.get("/best", getBestMovies);
+// router.get("/best", movieController.getBestMovies);
 
 // Route pour récupérer les films les moins notés
-router.get("/worst", getWorstMovies);
+// router.get("/worst", movieController.getWorstMovies);
 
 // Route pour récupérer les films les plus récents
-router.get("/latest", getLatestMovies);
+// router.get("/latest", movieController.getLatestMovies);
 
 // Route pour récupérer les films de façon aléatoire
-router.get("/random", getRandomMovies);
+// router.get("/random", movieController.getRandomMovies);
 
 // Route d'upload
-router.post("/picture", isAdmin, authorize(ROLES.ADMIN), uploadPicture);
+// router.post(
+//   "/picture",
+//   isAdmin,
+//   authorize(ROLES.ADMIN),
+//   movieController.uploadPicture
+// );
 
-// Route de création d'un film
-router.post("/", isAdmin, authorize(ROLES.ADMIN), createMovie);
-
-// Route de mise à jour d'un film
-router.put("/:id", isAdmin, authorize(ROLES.ADMIN), updateMovie);
-
-// Route de suppression d'un film
-router.delete("/:id", isAdmin, authorize(ROLES.ADMIN), deleteMovie);
+// Routes protégées (écriture) - nécessitent une authentification et des droits admin
+router.post(
+  "/",
+  isAuthenticated,
+  isAdmin,
+  authorize(ROLES.ADMIN),
+  movieController.createMovie
+);
+router.put(
+  "/:id",
+  isAuthenticated,
+  isAdmin,
+  authorize(ROLES.ADMIN),
+  movieController.updateMovie
+);
+router.delete(
+  "/:id",
+  isAuthenticated,
+  isAdmin,
+  authorize(ROLES.ADMIN),
+  movieController.deleteMovie
+);
 
 module.exports = router;

@@ -27,6 +27,7 @@ const Genre = sequelize.define(
   {
     timestamps: true,
     paranoid: true, // Soft delete
+    tableName: "Genres", // Nom explicite de la table pour correspondre à la référence dans Movie
   }
 );
 
@@ -47,7 +48,17 @@ Genre.associate = (models) => {
   Genre.hasMany(models.Movie, {
     foreignKey: "genreId",
     as: "movies",
+    onDelete: "RESTRICT", // Empêche la suppression d'un genre s'il a des films
+    onUpdate: "CASCADE", // Met à jour les films si le genre est modifié
   });
+};
+
+// Méthode pour vérifier si un genre existe
+Genre.genreExists = async (name) => {
+  const genre = await Genre.findOne({
+    where: { name },
+  });
+  return genre ? true : false;
 };
 
 module.exports = Genre;

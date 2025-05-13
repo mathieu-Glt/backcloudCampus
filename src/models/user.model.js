@@ -1,9 +1,15 @@
-const { DataTypes, Op } = require("sequelize");
+const { Model, DataTypes, Op } = require("sequelize");
 const sequelize = require("../database/database");
 const bcrypt = require("bcrypt");
 
-const User = sequelize.define(
-  "User",
+class User extends Model {
+  // Méthode pour vérifier le mot de passe
+  async comparePassword(password) {
+    return bcrypt.compare(password, this.password);
+  }
+}
+
+User.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -35,9 +41,6 @@ const User = sequelize.define(
         notEmpty: true,
         len: [6, 100], // Mot de passe d'au moins 6 caractères
       },
-      set(value) {
-        this.setDataValue("password", bcrypt.hashSync(value, 10)); // hash le mot de passe reçu avant de l'enregistrer dans la base de données
-      },
     },
     firstname: {
       type: DataTypes.STRING,
@@ -54,8 +57,8 @@ const User = sequelize.define(
       },
     },
     role: {
-      type: DataTypes.ENUM("user", "admin"),
-      defaultValue: "user",
+      type: DataTypes.ENUM("USER", "ADMIN"),
+      defaultValue: "USER",
       allowNull: false,
     },
     isActive: {
@@ -69,9 +72,22 @@ const User = sequelize.define(
     },
   },
   {
-    // Options du modèle
+    sequelize,
+    modelName: "User",
+    tableName: "users",
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          user.password = await bcrypt.hash(user.password, 10);
+        }
+      },
+    },
     timestamps: true,
-    tableName: "users", // Nom de la table dans la base de données
     indexes: [
       {
         unique: true,
@@ -198,11 +214,6 @@ User.userRole = async function (email) {
     where: { email },
   });
   return user.role;
-};
-
-// Méthode pour comparer les mots de passe
-User.comparePassword = async function (plainPassword, hashedPassword) {
-  return await bcrypt.compare(plainPassword, hashedPassword);
 };
 
 // Définition des relations

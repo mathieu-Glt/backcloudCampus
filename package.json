@@ -1,18 +1,46 @@
 {
   "name": "backend_cloudcampus",
   "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "description": "Backend API pour l'application CloudCampus",
+  "main": "server/index.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest",
-    "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js"
+    "start": "node dist/server.js",
+    "dev": "nodemon src/server.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "prepare": "husky install",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "dev:ts": "ts-node-dev --respawn --transpile-only src/server.ts"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "api",
+    "backend",
+    "express",
+    "node",
+    "cloudcampus"
+  ],
+  "author": {
+    "name": "Mathieu",
+    "email": "mathieu@example.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mathieu-Glt/backend_cloudcampus.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mathieu-Glt/backend_cloudcampus/issues"
+  },
+  "homepage": "https://github.com/mathieu-Glt/backend_cloudcampus#readme",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "chalk": "^4.1.2",
     "connect-session-sequelize": "^7.1.7",
     "cookie-parser": "^1.4.7",
@@ -41,5 +69,48 @@
     "serve-favicon": "^2.5.0",
     "supertest": "^7.1.0",
     "xss": "^1.0.15"
-  }
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.18",
+    "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.1",
+    "@types/express-fileupload": "^1.5.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/morgan": "^1.9.9",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.15.17",
+    "@types/nodemailer": "^6.4.17",
+    "@types/sequelize": "^4.28.20",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.0",
+    "typescript": "^5.8.3"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src",
+    "server.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "os": [
+    "linux",
+    "darwin",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ]
 }
